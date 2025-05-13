@@ -3,6 +3,33 @@ from typing     import NamedTuple
 from pathlib    import Path
 import hashlib, json
 
+
+
+class Grid:
+    def __init__(self, size, start, goal, obstacles):
+        self.size = size
+        self.start = start
+        self.goal = goal
+        self.obstacles = obstacles
+    
+    def to_dict(self):
+        return {
+            'size': tuple(self.size),
+            'start': tuple(self.start),
+            'goal': tuple(self.goal),
+            'obstacles': [list(o) for o in self.obstacles]
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            size=tuple(data['size']),
+            start=tuple(data['start']),
+            goal=tuple(data['goal']),
+            obstacles=[tuple(o) for o in data['obstacles']]
+        )
+
+
 class Params(NamedTuple):
     total_episodes: int      # Total episodes
     learning_rate: float     # Learning rate
@@ -24,7 +51,18 @@ class Params(NamedTuple):
     n_views: int
     act: list
     starting_state:int
+    grid: Grid
 
+    @classmethod
+    def from_dict(cls, data):
+        data = dict(data)
+        data['grid'] = Grid.from_dict(data['grid'])
+        return cls(**data)
+
+    def to_dict(cls):
+        data = cls._asdict()  
+        data['grid'] = cls.grid.to_dict()
+        return data
 
 
 def get_config_hash(config: Params) -> str:
@@ -37,11 +75,13 @@ def get_config_hash(config: Params) -> str:
             return tuple(convert(x) for x in obj)
         elif isinstance(obj, float):
             return round(obj, 10)  # standardize float precision
+        elif isinstance(obj, Grid):
+            return {k: convert(v) for k, v in sorted(obj.to_dict().items())}
         else:
-            return obj
+            return obj 
 
     # Convert the config to a serializable form
-    data = convert(config._asdict())
+    data = convert(config.to_dict())
 
     # Dump to JSON string (ensures consistent ordering), then hash
     json_str = json.dumps(data, sort_keys=True, separators=(',', ':'))

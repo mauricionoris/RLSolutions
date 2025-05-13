@@ -5,20 +5,18 @@ from gym.envs.registration import register
 
 def env_registry(envid, entry_p):
 
-
-
     # Register the environment
     register(
         id=envid,
         entry_point= entry_p,  # Replace my_module with the actual module name
     )
+    print("********Custom Environment Loaded**** ")
+    print("************************************* ")
+    
     print(gym.envs.registration.registry[envid])
+    print("************************************* ")
     
 
-    # Create an instance of the environment
-#    env = gym.make(entry_p)
-#    print(env.metadata)
-#    env.close()
 
 def env_unregistry(envid):
     env_dict = gym.envs.registration.registry.env_specs.copy()
@@ -33,6 +31,12 @@ def check_env(envid):
 
 def getgym():
     return gym
+
+
+#Create an instance of the environment
+#env = gym.make(entry_p)
+#print(env.metadata)
+#env.close()
 
 #env_unregistry(envid)
 #check_env(envid)
