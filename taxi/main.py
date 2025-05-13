@@ -73,7 +73,7 @@ def present_charts(evol, mode):
 
 #################################################################################
 config = Params(
-    total_episodes     =5501,
+    total_episodes     =6000,
     learning_rate      =0.1,
     gamma              =0.8,
     epsilon            =0.99,

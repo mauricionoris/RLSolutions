@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
-def create_charts(epsilon_hist, q_table_history, rewards_per_episode):
+def create_charts(epsilon_hist, q_table_history, rewards_per_episode, grid, policy, experiment_name):
 
     figures = []
 
@@ -44,15 +45,80 @@ def create_charts(epsilon_hist, q_table_history, rewards_per_episode):
     ax4.grid(True)
     figures.append(fig4)
 
+    # 3. Total rewards por episódio
+    fig5, ax5 = plt.subplots()
+    ax5 = policy_view(ax5, grid, policy)
+    ax4.set_title('Política Ótima')
+    ax4.set_xlabel("Episódios")
+    ax4.set_ylabel("média")
+    figures.append(fig5)
+
+
     return figures
 
-p = ['epsilon_decay.png','q_table_average.png' ,'rewards_per_episode.png', 'moving_average_rewards.png' ]
 
-def save_pic(figs, path):
+def save_pic(figs, path, exp_name):
+    p = [f'epsilon_decay.png',f'q_table_average.png' ,f'rewards_per_episode.png', f'moving_average_rewards.png',f'optimal_policy.png']
+
     for fig, filename in zip(figs, p):
-        fig.savefig(path + filename)
+        fig.savefig(f'{path}{exp_name}_{filename}')
 
 def show(figs):
     for fig in figs:
         fig.show()
+
+def close(figs):
+    for fig in figs:
+         plt.close(fig)
+
+def policy_view(ax5 ,grid, policy):
+        policy_matrix = np.zeros(grid.size, dtype=object)
+
+        # Símbolos para as direções
+        s = {   3: "↑",  2: "→",   1: "↓",   0: "←"  }
+#       ['left', 'down', 'right', 'up'],
+
+        data1 = np.argmax(policy, axis=1).reshape(-1, 1)
+        reshaped = data1.reshape(grid.size)
+        dict_4x12 = {(i, j): reshaped[i, j] for i in range(grid.size[0]) for j in range(grid.size[1])}
+        for p in dict_4x12.keys():
+            policy_matrix[p] = s[dict_4x12[p]]
+
+        h, w = grid.size
+
+        policy_matrix[grid.start] =  'S'
+
+        policy_matrix[grid.goal] =  'G'
+
+
+        
+        for o in grid.obstacles:
+            policy_matrix[o] = 'X'
+
+
+     
+ 
+
+        plt.figure(figsize=(8, 6))
+        ax = plt.gca()
+
+        # Criando a grade
+        for i in range(h + 1):
+            ax5.axhline(i - 0.5, color='black', linestyle='-', linewidth=1)
+        for j in range(w + 1):
+            ax5.axvline(j - 0.5, color='black', linestyle='-', linewidth=1)
+
+        # Preenchendo com as ações
+        for i in range(h):
+            for j in range(w):
+                ax5.text(j, i, policy_matrix[i, j], ha='center', va='center', fontsize=20)
+
+        ax5.set_xlim(-0.5, w - 0.5)
+        ax5.set_ylim(h - 0.5, -0.5)
+        ax5.set_xticks(range(w))
+        ax5.set_yticks(range(h))
+        ax5.grid(False)
+        ax5._in_layout = True
+        return ax5
+
 

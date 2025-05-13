@@ -2,13 +2,13 @@ from tqdm import tqdm
 import numpy as np
 import random
 import exec_action as a
-
+'''
 epsilon_hist = []
 q_table_history = []
 rewards_per_episode = []
 
 evolution = {}
-
+'''
 
 
 def epsilon_greedy_policy(Q_state, epsilon, env):
@@ -22,6 +22,13 @@ def epsilon_greedy_policy(Q_state, epsilon, env):
 
 
 def fit(env, config):
+
+    epsilon_hist = []
+    q_table_history = []
+    rewards_per_episode = []
+
+    evolution = {}
+
 
     #hyper parameters 
     total_episodes = config.total_episodes
@@ -49,16 +56,10 @@ def fit(env, config):
         total_reward = 0
         while not done:
             action = epsilon_greedy_policy(Q[state],epsilon, env)
-
             # Take the action (a) and observe the outcome state(s') and reward (r)
-            new_state, reward, terminated, truncated, info = a.execute_action(state, action, env, limit_of_stubbornness, act)
-           
+            new_state, reward, done, info, step = a.execute_action(state, action, env, limit_of_stubbornness, act, step)
             # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
             Q[state][action] = Q[state][action] + learning_rate * (reward + gamma * np.max(Q[new_state]) - Q[state][action])
-            # If done : finish episode
-            if terminated or truncated:
-                done = True
-            # Our new state is now state
             state = new_state
             total_reward += reward
 

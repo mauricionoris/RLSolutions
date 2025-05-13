@@ -98,10 +98,9 @@ def present_charts(evol, mode, qtable, config):
 
 
 
-
 #################################################################################
 config = Params(
-    total_episodes     =10000,
+    total_episodes     =1500,
     learning_rate      =0.1,
     gamma              =0.8,
     epsilon            =0.99,
@@ -123,6 +122,8 @@ config = Params(
     starting_state=(3,0),
     grid = Grid((4,12),(3,0),(3,11),[(3,1),(3,2),(3,3),(3,4),(3,5),(3,6),(3,7),(3,8),(3,9),(3,10)])
 )
+
+
 
 if __name__ == "__main__":
     mode = 'view'
