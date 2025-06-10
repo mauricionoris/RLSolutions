@@ -62,14 +62,14 @@ import seaborn as sns
 
 # Treinamento --> is_training = True
 # Avaliação --> is_training = False
+# is_training = False
 is_training = False
-# is_training = True
 
 # parâmetros do ambiente (env)
 size_e = 5
 seeds = 1
 proba_frozen = .8
-max_episode_steps_ = 200
+max_episode_steps_ = 2000
 '''
 is_slippery=True: If true the player will move in intended direction with probability 
 of 1/3 else will move in either perpendicular direction with equal probability of 1/3 
@@ -221,7 +221,16 @@ if not is_training:
     while not done and not truncated:
         action = np.argmax(q_table[state])
         next_state, reward, done, truncated, _ = env.step(action)
+        
+        if state == next_state:
+            action = 1
+            next_state, reward, done, truncated, _ = env.step(action)
+        
         state = next_state
+
+        
+        
+
         i+=1
         print('step time:', i, end='\r')
         rw+=reward

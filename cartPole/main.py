@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 21 15:38:50 2024
-
-@author: TechnoLEDs
-"""
-
 import gymnasium as gym
 
 # Load the environment with render mode specified

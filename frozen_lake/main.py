@@ -147,7 +147,7 @@ def config_build(is_sleep, size_e, seed, proba_frozen):
     
     my_map = generate_random_map(size=size_e, p=proba_frozen, seed=seed)
     return Params(
-        total_episodes     =100000,
+        total_episodes     =3000,
         learning_rate      =0.1,
         gamma              =0.8,
         epsilon            =0.99,
